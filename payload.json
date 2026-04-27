@@ -1,0 +1,5 @@
+{
+  "localFilePath": "test-upload.txt",
+  "s3Key": "demo/test-upload.txt",
+  "contentType": "text/plain"
+}
