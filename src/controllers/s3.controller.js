@@ -114,6 +114,24 @@ class S3Controller {
       next(error);
     }
   }
+
+  async getPresignedUrl(req, res, next) {
+    try {
+      const { filename } = req.params;
+      const { operation = 'getObject', expiresIn = 3600 } = req.query;
+
+      const url = await s3Service.generatePresignedUrl(filename, operation, parseInt(expiresIn, 10));
+
+      res.json({
+        filename,
+        operation,
+        expiresIn: parseInt(expiresIn, 10),
+        url
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = new S3Controller();

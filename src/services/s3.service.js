@@ -5,6 +5,7 @@ const {
   ListObjectsV2Command
 } = require('@aws-sdk/client-s3');
 const { s3Client, BUCKET_NAME } = require('../config/aws.config');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 class S3Service {
   async uploadContent(filename, fileContent, contentType = 'application/octet-stream') {
@@ -52,6 +53,19 @@ class S3Service {
 
     const command = new DeleteObjectCommand(params);
     return await s3Client.send(command);
+  }
+
+  async generatePresignedUrl(filename, operation = 'getObject', expiresIn = 3600) {
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: filename
+    };
+
+    const command = operation === 'putObject'
+      ? new PutObjectCommand(params)
+      : new GetObjectCommand(params);
+
+    return await getSignedUrl(s3Client, command, { expiresIn });
   }
 
 }
