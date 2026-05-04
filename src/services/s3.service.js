@@ -55,19 +55,39 @@ class S3Service {
     return await s3Client.send(command);
   }
 
-  async generatePresignedUrl(filename, operation = 'getObject', expiresIn = 3600) {
+  async generatePresignedUrl(filename, expiresIn = 3600) {
     const params = {
       Bucket: BUCKET_NAME,
       Key: filename
     };
 
-    const command = operation === 'putObject'
-      ? new PutObjectCommand(params)
-      : new GetObjectCommand(params);
+    const command = new GetObjectCommand(params);
 
     return await getSignedUrl(s3Client, command, { expiresIn });
   }
 
+  async generatePresignedUploadUrl(filename, contentType = 'application/octet-stream', expiresIn = 3600) {
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: filename,
+      ContentType: contentType
+    };
+
+    const command = new PutObjectCommand(params);
+
+    return await getSignedUrl(s3Client, command, { expiresIn });
+  }
+
+  async generatePresignedDeleteUrl(filename, expiresIn = 3600) {
+    const params = {
+      Bucket: BUCKET_NAME,
+      Key: filename
+    };
+
+    const command = new DeleteObjectCommand(params);
+
+    return await getSignedUrl(s3Client, command, { expiresIn });
+  }
 }
 
 module.exports = new S3Service();

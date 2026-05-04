@@ -1,4 +1,5 @@
 const { S3Client } = require('@aws-sdk/client-s3');
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -17,7 +18,13 @@ const s3Client = new S3Client({
   credentials: config.credentials
 });
 
+const dynamoDBClient = new DynamoDBClient({
+  region: config.region,
+  credentials: config.credentials
+});
+
 module.exports = {
   s3Client,
+  dynamoDBClient,
   BUCKET_NAME: config.bucketName
 };
