@@ -75,7 +75,7 @@ class S3Service {
 
     const command = new PutObjectCommand(params);
 
-    return await getSignedUrl(s3Client, command, { expiresIn });
+    return await getSignedUrl(s3Client, command, { expiresIn }); // prove to AWS that it is created using server's credentials
   }
 
   async generatePresignedDeleteUrl(filename, expiresIn = 3600) {

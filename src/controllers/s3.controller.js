@@ -131,7 +131,7 @@ class S3Controller {
       next(error);
     }
   }
-  
+
   async getPresignedUploadUrl(req, res, next) {
     try {
       const { filename } = req.params;
@@ -182,10 +182,9 @@ class S3Controller {
       const dynamodbService = require('../services/dynamodb.service');
       const { BUCKET_NAME } = require('../config/aws.config');
 
-      // 1. Generate Presigned Upload URL
       const uploadUrl = await s3Service.generatePresignedUploadUrl(filename, contentType);
+      console.log("This is uploadUrl: -> ", uploadUrl);
 
-      // 2. Use the URL to upload the file (from the backend to S3)
       const uploadResponse = await fetch(uploadUrl, {
         method: 'PUT',
         body: Buffer.from(fileContent),
@@ -198,11 +197,9 @@ class S3Controller {
         throw new Error(`Upload failed with status ${uploadResponse.status}`);
       }
 
-      // 3. Write metadata to DynamoDB
       const fileUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}`;
       await dynamodbService.saveMetadata(filename, fileUrl);
 
-      // 4. Return Success
       res.json({
         message: 'File uploaded via presigned URL and database updated successfully!',
         filename,

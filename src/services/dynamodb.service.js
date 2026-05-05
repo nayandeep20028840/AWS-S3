@@ -9,7 +9,9 @@ class DynamoDBService {
     const params = {
       TableName: TABLE_NAME,
       Item: {
-        filename: filename, // Partition Key
+        PK: filename,
+        SK: 'METADATA',
+        filename: filename,
         uploadedAt: new Date().toISOString(),
         status: 'SUCCESS',
         fileUrl: fileUrl
